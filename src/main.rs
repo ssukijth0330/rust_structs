@@ -68,7 +68,7 @@ fn main() {
     };
     // Start filling the media playlist
     let media_segment1 = MediaSegment {
-        duration: Duration::new(10,10),
+        duration: Duration::new(10,1234567),
         url: String::from("segment1.ts"),
         };
     media_playlist.segments.push(media_segment1);
@@ -86,30 +86,35 @@ fn main() {
     media_playlist.version = 4;
     media_playlist.ended = true;
     media_playlist.target_duration = Duration::new(20,0);
-    media_playlist.discontinuity = vec![
-        DiscontinuitySegment {
-            discontinuity_duration: Duration::new(22,20),
-            discontinuity_segments: vec![
-                MediaSegment {
-                    duration: Duration::new(10,10),
-                    url: String::from("segment1.ts"),
-                },
-                MediaSegment {
-                    duration: Duration::new(12,10),
-                    url: String::from("segment2.ts"),
-                },
-            ],
-        };
-        DiscontinuitySegment {
-            discontinuity_duration: Duration::new(15,10),
-            discontinuity_segments: vec![
-                MediaSegment {
-                    duration: Duration::new(15,10),
-                    url: String::from("segment3.ts"),
-                },
-            ],
-        };
-    ];
+
+
+    let discontinuity_segment1 = DiscontinuitySegment {
+        discontinuity_duration: Duration::new(10,1234567),
+        discontinuity_segments: vec![
+            MediaSegment {
+                duration: Duration::new(10,1234567),
+                url: String::from("segment1.ts"),
+            }
+        ],
+    };
+    media_playlist.discontinuity.push(discontinuity_segment1);    
+
+    let discontinuity_segment1 = DiscontinuitySegment {
+        discontinuity_duration: Duration::new(22,20),
+        discontinuity_segments: vec![
+            MediaSegment {
+                duration: Duration::new(15,10),
+                url: String::from("segment3.ts"),
+            },
+        ],
+    };
+    media_playlist.discontinuity.push(discontinuity_segment1);
+
+    let media_segment4 = media_playlist.segments[1].clone();
+    let sum_discontinutity_duration = media_playlist.segments[1].duration.as_millis() + media_playlist.discontinuity[0].discontinuity_duration.as_millis();
+    media_playlist.discontinuity[0].discontinuity_segments.push(media_segment4);
+    media_playlist.discontinuity[0].discontinuity_duration = Duration::from_millis(sum_discontinutity_duration as u64);
+    
     //print the media playlist
-    println!("{:?}", media_playlist);
+    println!("{:?}", media_playlist.discontinuity);
 }
